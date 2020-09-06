@@ -1,0 +1,22 @@
+{
+  "name": "indexed-section-list-example",
+  "displayName": "IndexedSectionList Example",
+  "expo": {
+    "name": "indexed-section-list-example",
+    "slug": "indexed-section-list-example",
+    "description": "Example app for indexed-section-list",
+    "privacy": "public",
+    "version": "1.0.0",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
