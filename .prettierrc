@@ -6,5 +6,5 @@
   "singleQuote": true,
   "trailingComma": "all",
   "endOfLine": "auto",
-  "printWidth": 100
+  "printWidth": 80
 }
