@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, SectionList, Text } from 'react-native';
 
-import ListIndex from './ListIndex';
+import IndexList from './IndexList';
 
 // See https://javascript.info/regexp-unicode#unicode-properties-p
 // https://github.com/facebook/react-native/issues/29807
@@ -46,7 +46,7 @@ class SectionHeader extends React.PureComponent<{ title: string }> {
           }}>
           {title}
         </Text>
-        <View style={{ flex: 1, borderBottomWidth: 2, borderColor: 'gray' }} />
+        <View style={{ flex: 1, borderWidth: 1, borderColor: 'gray' }} />
       </View>
     );
   }
@@ -118,7 +118,7 @@ export default ({ items }: { items: ItemType[] }) => {
         renderSectionHeader={({ section: { title } }) => <SectionHeader title={title} />}
         renderItem={({ item }) => <ListItem item={item} />}
       />
-      <ListIndex
+      <IndexList
         indexes={sectionTitles}
         indexItemHeight={25}
         onSelectIndex={(selection) => {

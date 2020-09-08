@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { SafeAreaView } from 'react-native';
 import IndexedSectionList from 'indexed-section-list';
 
 export default function App() {
   return (
-    <View style={styles.container}>
+    <SafeAreaView>
       <IndexedSectionList
         items={[
           'a',
@@ -26,16 +26,9 @@ export default function App() {
           'q',
           'r',
           's',
+          't',
         ]}
       />
-    </View>
+    </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

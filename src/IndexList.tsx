@@ -109,97 +109,101 @@ export default ({ indexes, onSelectIndex, indexItemHeight }: Props) => {
   );
 
   return (
-    <View
-      style={styles.listIndexContainer}
-      ref={containerRef}
-      collapsable={false}
-      onLayout={() => {
-        if (containerRef.current !== null) {
-          containerRef.current.measure((_ox, _oy, _width, height, _px, py) => {
-            // border takes 2 pixels.
-            // TODO: can I measure the container of the flatlist itself?
-            containerMeasure.current = { height: height - 2, pageY: py };
-          });
-        }
-      }}>
-      <Animated.FlatList
-        ref={flatListRef}
-        contentContainerStyle={styles.indexContentContainer}
-        data={indexes}
-        scrollEnabled={false}
-        getItemLayout={(_data: any, index: number) => ({
-          length: indexItemHeight,
-          offset: indexItemHeight * index,
-          index,
-        })}
-        onMoveShouldSetResponderCapture={() => true}
-        onResponderGrant={(event: GestureResponderEvent) => {
-          const { pageY: containerPageY } = containerMeasure.current;
-          cursorPrevPosition.current = event.nativeEvent.pageY - containerPageY;
-        }}
-        onResponderMove={(event: GestureResponderEvent) => {
-          const { height: containerHeight, pageY: containerPageY } = containerMeasure.current;
-          const listHeight = Math.max(containerHeight, indexes.length * indexItemHeight);
-          const scrollTop = listHeight - containerHeight;
-          cursorPosition.current = Math.max(
-            0,
-            Math.min(containerHeight, event.nativeEvent.pageY - containerPageY)
-          );
-          if (cursorPosition.current !== null && containerHeight < listHeight) {
-            const efficiency = scrollEfficiency(containerHeight, listHeight);
-            if (cursorPosition.current === 0) {
-              // The cursor is at/bellow the bottom of the list container.
-              if (cursorPrevPosition.current !== 0) {
-                // The cursor just collided with the border - start scrolling animation.
-                animateScroll(efficiency > 0 ? scrollTop : 0);
-              }
-            } else if (cursorPosition.current === containerHeight) {
-              // The cursor is at/above the top of the list container.
-              if (cursorPrevPosition.current !== containerHeight) {
-                // The cursor just collided with the border - start scrolling animation.
-                animateScroll(efficiency > 0 ? 0 : scrollTop);
-              }
-            } else if (cursorPrevPosition.current !== null) {
-              // The cursor is within the list container - scroll manually.
-              scrollPosition.setValue(
-                Math.max(
-                  0,
-                  Math.min(
-                    listHeight - containerHeight,
-                    flatListScroll.current +
-                      (cursorPrevPosition.current - cursorPosition.current) * efficiency
-                  )
-                )
-              );
-            }
-          } else {
-            scrollPosition.setValue(0);
+    <View style={styles.listIndexWrapper}>
+      <View
+        style={styles.indexContainer}
+        ref={containerRef}
+        collapsable={false}
+        onLayout={() => {
+          if (containerRef.current !== null) {
+            containerRef.current.measure((_ox, _oy, _width, height, _px, py) => {
+              containerMeasure.current = { height: height, pageY: py };
+              console.log(height);
+            });
           }
-          cursorPrevPosition.current = cursorPosition.current;
-        }}
-        onResponderRelease={() => {
-          cursorPrevPosition.current = null;
-          cursorPosition.current = null;
-          scrollPosition.stopAnimation();
-          activeIndex.current = null;
-        }}
-        showsVerticalScrollIndicator={false}
-        keyExtractor={(item: string) => item}
-        renderItem={({ item, index }: ListRenderItemInfo<string>) => (
-          <IndexItem
-            index={index}
-            item={item}
-            onSelectIndex={onSelectIndex}
-            indexItemHeight={indexItemHeight}
-          />
-        )}
-      />
+        }}>
+        <Animated.FlatList
+          ref={flatListRef}
+          contentContainerStyle={styles.indexContentContainer}
+          data={indexes}
+          scrollEnabled={false}
+          getItemLayout={(_data: any, index: number) => ({
+            length: indexItemHeight,
+            offset: indexItemHeight * index,
+            index,
+          })}
+          onMoveShouldSetResponderCapture={() => true}
+          onResponderGrant={(event: GestureResponderEvent) => {
+            const { pageY: containerPageY } = containerMeasure.current;
+            cursorPrevPosition.current = event.nativeEvent.pageY - containerPageY;
+          }}
+          onResponderMove={(event: GestureResponderEvent) => {
+            const {
+              height: containerHeight,
+              pageY: containerPageY,
+            } = containerMeasure.current;
+            const listHeight = Math.max(containerHeight, indexes.length * indexItemHeight);
+            const scrollTop = listHeight - containerHeight;
+            cursorPosition.current = Math.max(
+              0,
+              Math.min(containerHeight, event.nativeEvent.pageY - containerPageY)
+            );
+            if (cursorPosition.current !== null && containerHeight < listHeight) {
+              const efficiency = scrollEfficiency(containerHeight, listHeight);
+              if (cursorPosition.current === 0) {
+                // The cursor is at/bellow the bottom of the list container.
+                if (cursorPrevPosition.current !== 0) {
+                  // The cursor just collided with the border - start scrolling animation.
+                  animateScroll(efficiency > 0 ? scrollTop : 0);
+                }
+              } else if (cursorPosition.current === containerHeight) {
+                // The cursor is at/above the top of the list container.
+                if (cursorPrevPosition.current !== containerHeight) {
+                  // The cursor just collided with the border - start scrolling animation.
+                  animateScroll(efficiency > 0 ? 0 : scrollTop);
+                }
+              } else if (cursorPrevPosition.current !== null) {
+                // The cursor is within the list container - scroll manually.
+                scrollPosition.setValue(
+                  Math.max(
+                    0,
+                    Math.min(
+                      listHeight - containerHeight,
+                      flatListScroll.current +
+                        (cursorPrevPosition.current - cursorPosition.current) * efficiency
+                    )
+                  )
+                );
+              }
+            } else {
+              scrollPosition.setValue(0);
+            }
+            cursorPrevPosition.current = cursorPosition.current;
+          }}
+          onResponderRelease={() => {
+            cursorPrevPosition.current = null;
+            cursorPosition.current = null;
+            scrollPosition.stopAnimation();
+            activeIndex.current = null;
+          }}
+          showsVerticalScrollIndicator={false}
+          keyExtractor={(item: string) => item}
+          renderItem={({ item, index }: ListRenderItemInfo<string>) => (
+            <IndexItem
+              index={index}
+              item={item}
+              onSelectIndex={onSelectIndex}
+              indexItemHeight={indexItemHeight}
+            />
+          )}
+        />
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  listIndexContainer: {
+  listIndexWrapper: {
     position: 'absolute',
     top: 0,
     bottom: 0,
@@ -209,6 +213,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 8,
     backgroundColor: '#ffffff',
+  },
+  indexContainer: {
+    flexGrow: 1,
   },
   indexContentContainer: {
     flexGrow: 1,
