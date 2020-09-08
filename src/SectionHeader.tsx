@@ -1,7 +1,8 @@
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
+import type { SectionHeaderProps } from './types';
 
-class SectionHeader extends React.PureComponent<{ title: string }> {
+class SectionHeader extends React.PureComponent<SectionHeaderProps> {
   render() {
     const { title } = this.props;
     return (

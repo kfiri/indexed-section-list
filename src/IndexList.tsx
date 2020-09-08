@@ -19,6 +19,7 @@ export default ({
   onSelectIndex,
   indexItemHeight,
   scrollEfficiency,
+  wrapperStyle,
 }: IndexListProps) => {
   const containerRef = React.useRef<View>(null);
   const flatListRef = React.useRef<FlatList>(null);
@@ -96,7 +97,7 @@ export default ({
   );
 
   return (
-    <View style={styles.listIndexWrapper}>
+    <View style={[{ width: indexItemHeight }, styles.listIndexWrapper, wrapperStyle]}>
       <View
         style={styles.indexContainer}
         ref={containerRef}
@@ -191,13 +192,6 @@ export default ({
 const styles = StyleSheet.create({
   listIndexWrapper: {
     position: 'absolute',
-    top: 0,
-    bottom: 0,
-    right: 0,
-    marginVertical: 25,
-    marginRight: 10,
-    borderWidth: 1,
-    borderRadius: 8,
     backgroundColor: '#ffffff',
   },
   indexContainer: {
@@ -205,14 +199,6 @@ const styles = StyleSheet.create({
   },
   indexContentContainer: {
     flexGrow: 1,
-    alignItems: 'center',
-    justifyContent: 'space-around',
-  },
-  indexItem: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  indexText: {
-    fontSize: 14,
+    justifyContent: 'space-between',
   },
 });

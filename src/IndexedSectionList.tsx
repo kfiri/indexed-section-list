@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, SectionList } from 'react-native';
+import { View, SectionList, StyleSheet, SectionListData } from 'react-native';
 
-import type { ItemType, IndexedSectionListProps } from './types';
+import type { ItemType, IndexedSectionListProps, SectionItem } from './types';
 import { scrollEfficiencyFunctions } from './defaultFunctions';
 import SectionHeader from './SectionHeader';
 import ListItem from './ListItem';
@@ -44,7 +44,12 @@ export default ({
   items,
   indexItemHeight = 25,
   scrollEfficiency,
-  style,
+  wrapperStyle,
+  indexWrapperStyle,
+  getSectionProps,
+  renderSectionHeader,
+  renderItem,
+  ...sectionListProps
 }: IndexedSectionListProps) => {
   const sectionListRef = React.useRef<SectionList>(null);
 
@@ -57,7 +62,7 @@ export default ({
     return scrollEfficiency;
   }, [scrollEfficiency]);
 
-  const sections = React.useMemo(() => {
+  const sections = React.useMemo<SectionListData<SectionItem>[]>(() => {
     const itemSections: {
       [key: string]: { data: ItemType; key: string }[];
     } = {};
@@ -76,31 +81,36 @@ export default ({
       section.push({ data: item, key: itemKey.toString() });
     }
     return Object.entries(itemSections)
-      .map(([sectionTitle, unsortedData]) => ({
+      .map<SectionListData<SectionItem>>(([sectionTitle, unsortedData]) => ({
         title: sectionTitle,
         key: sectionTitle,
         data: unsortedData.sort((leftItem, rightItem) =>
           compareStrings(getTitle(leftItem.data), getTitle(rightItem.data))
         ),
+        ...(getSectionProps ? getSectionProps(sectionTitle, unsortedData) : {}),
       }))
       .sort((leftSection, rightSection) =>
         compareStrings(leftSection.title, rightSection.title)
       );
-  }, [items]);
+  }, [getSectionProps, items]);
 
   const sectionTitles = React.useMemo(() => sections.map(({ title }) => title), [sections]);
 
   return (
-    <View style={style}>
+    <View style={[styles.wrapper, wrapperStyle]}>
       <SectionList
+        {...sectionListProps}
         ref={sectionListRef}
         sections={sections}
         keyExtractor={(item) => item.key}
-        onScrollToIndexFailed={() => {}}
-        renderSectionHeader={({ section: { title } }) => <SectionHeader title={title} />}
-        renderItem={({ item }) => <ListItem item={item} />}
+        onScrollToIndexFailed={(_info) => console.warn('failed to scroll!')}
+        renderSectionHeader={
+          renderSectionHeader || (({ section: { title } }) => <SectionHeader title={title} />)
+        }
+        renderItem={renderItem || (({ item }) => <ListItem item={item} />)}
       />
       <IndexList
+        wrapperStyle={indexWrapperStyle}
         indexes={sectionTitles}
         indexItemHeight={indexItemHeight}
         scrollEfficiency={scrollEfficiencyFunction}
@@ -116,3 +126,7 @@ export default ({
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  wrapper: { alignItems: 'flex-end', justifyContent: 'center' },
+});
