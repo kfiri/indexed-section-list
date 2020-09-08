@@ -16,7 +16,6 @@ interface ItemProps {
 class IndexItem extends PureComponent<ItemProps> {
   render() {
     const { index, item, onSelectIndex, indexItemHeight, style } = this.props;
-    console.log(TouchableOpacity);
     return (
       <TouchableOpacity
         onPressIn={() => onSelectIndex({ index, item, method: 'press' })}
@@ -25,8 +24,7 @@ class IndexItem extends PureComponent<ItemProps> {
           styles.indexItem,
           style,
           { height: indexItemHeight },
-        ]}
-      >
+        ]}>
         <Text style={styles.indexText}>{item}</Text>
       </TouchableOpacity>
     );

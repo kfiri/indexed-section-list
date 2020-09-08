@@ -6,7 +6,7 @@ import ListIndex from './ListIndex';
 // See https://javascript.info/regexp-unicode#unicode-properties-p
 // https://github.com/facebook/react-native/issues/29807
 const UNICODE_REGEX = /[a-zA-Z]/;
-const UNICODE_NUMBER_REGEX = /[0-9]/;
+const UNICODE_NUMBER_REGEX = /[#0-9]/;
 
 function getSection(text: string) {
   text = text.trim();
@@ -43,8 +43,7 @@ class SectionHeader extends React.PureComponent<{ title: string }> {
             fontSize: 18,
             fontWeight: 'bold',
             color: 'grey',
-          }}
-        >
+          }}>
           {title}
         </Text>
         <View style={{ flex: 1, borderBottomWidth: 2, borderColor: 'gray' }} />
@@ -85,8 +84,8 @@ export default ({ items }: { items: ItemType[] }) => {
     for (const item of items) {
       const itemTitle = getTitle(item);
       const itemSection = getSection(itemTitle);
-      const section = (itemSections[itemSection] =
-        itemSections[itemSection] || []);
+      const section = (itemSections[itemSection] = itemSections[itemSection] || []);
+      // TODO: fix this to count more then 1 key.
       const keysCount = section.filter((i) => i.key === itemTitle).length || '';
       section.push({
         item,
@@ -107,21 +106,16 @@ export default ({ items }: { items: ItemType[] }) => {
       .sort((left, right) => compareStrings(left.title, right.title));
   }, [items]);
 
-  const sectionTitles = React.useMemo(
-    () => sections.map(({ title }) => title),
-    [sections]
-  );
+  const sectionTitles = React.useMemo(() => sections.map(({ title }) => title), [sections]);
 
   return (
-    <View style={{ height: '100%' }}>
+    <View style={{ height: '100%', width: '100%' }}>
       <SectionList
         ref={sectionListRef}
         sections={sections}
         keyExtractor={(item) => item.key}
         onScrollToIndexFailed={() => {}}
-        renderSectionHeader={({ section: { title } }) => (
-          <SectionHeader title={title} />
-        )}
+        renderSectionHeader={({ section: { title } }) => <SectionHeader title={title} />}
         renderItem={({ item }) => <ListItem item={item} />}
       />
       <ListIndex

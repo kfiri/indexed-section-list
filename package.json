@@ -1,6 +1,6 @@
 {
   "name": "indexed-section-list",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A simple modular section list with index",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -125,10 +125,14 @@
   ],
   "prettier": {
     "quoteProps": "consistent",
-    "singleQuote": true,
     "tabWidth": 2,
+    "useTabs": false,
+    "bracketSpacing": true,
+    "jsxBracketSameLine": true,
+    "singleQuote": true,
     "trailingComma": "es5",
-    "useTabs": false
+    "endOfLine": "auto",
+    "printWidth": 95
   },
   "@react-native-community/bob": {
     "source": "src",

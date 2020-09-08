@@ -67,18 +67,11 @@ export default ({ indexes, onSelectIndex, indexItemHeight }: Props) => {
 
       if (cursorPosition.current !== null) {
         const { height: containerHeight } = containerMeasure.current;
-        const listHeight = Math.max(
-          containerHeight,
-          indexes.length * indexItemHeight
-        );
+        const listHeight = Math.max(containerHeight, indexes.length * indexItemHeight);
         let newSelectedIndex = Math.floor(
-          ((cursorPosition.current + flatListScroll.current) / listHeight) *
-            indexes.length
+          ((cursorPosition.current + flatListScroll.current) / listHeight) * indexes.length
         );
-        newSelectedIndex = Math.max(
-          0,
-          Math.min(indexes.length - 1, newSelectedIndex)
-        );
+        newSelectedIndex = Math.max(0, Math.min(indexes.length - 1, newSelectedIndex));
         if (activeIndex.current !== newSelectedIndex) {
           activeIndex.current = newSelectedIndex;
           onSelectIndex({
@@ -104,8 +97,7 @@ export default ({ indexes, onSelectIndex, indexItemHeight }: Props) => {
   const animateScroll = React.useMemo(
     () => (position: number) => {
       const scrollDuration =
-        (Math.abs(position - flatListScroll.current) * 1000) /
-        SCROLL_PIXELS_PER_SECOND;
+        (Math.abs(position - flatListScroll.current) * 1000) / SCROLL_PIXELS_PER_SECOND;
       Animated.timing(scrollPosition, {
         toValue: position,
         duration: scrollDuration,
@@ -129,8 +121,7 @@ export default ({ indexes, onSelectIndex, indexItemHeight }: Props) => {
             containerMeasure.current = { height: height - 2, pageY: py };
           });
         }
-      }}
-    >
+      }}>
       <Animated.FlatList
         ref={flatListRef}
         contentContainerStyle={styles.indexContentContainer}
@@ -147,14 +138,8 @@ export default ({ indexes, onSelectIndex, indexItemHeight }: Props) => {
           cursorPrevPosition.current = event.nativeEvent.pageY - containerPageY;
         }}
         onResponderMove={(event: GestureResponderEvent) => {
-          const {
-            height: containerHeight,
-            pageY: containerPageY,
-          } = containerMeasure.current;
-          const listHeight = Math.max(
-            containerHeight,
-            indexes.length * indexItemHeight
-          );
+          const { height: containerHeight, pageY: containerPageY } = containerMeasure.current;
+          const listHeight = Math.max(containerHeight, indexes.length * indexItemHeight);
           const scrollTop = listHeight - containerHeight;
           cursorPosition.current = Math.max(
             0,
@@ -182,8 +167,7 @@ export default ({ indexes, onSelectIndex, indexItemHeight }: Props) => {
                   Math.min(
                     listHeight - containerHeight,
                     flatListScroll.current +
-                      (cursorPrevPosition.current - cursorPosition.current) *
-                        efficiency
+                      (cursorPrevPosition.current - cursorPosition.current) * efficiency
                   )
                 )
               );
