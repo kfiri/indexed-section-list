@@ -32,6 +32,13 @@ function compareStrings(leftString: string, rightString: string) {
   return 0;
 }
 
+interface ItemObj {
+  title: string;
+  key?: string | number;
+}
+
+type ItemType = string | ItemObj;
+
 class SectionHeader extends React.PureComponent<{ title: string }> {
   render() {
     const { title } = this.props;
@@ -52,25 +59,20 @@ class SectionHeader extends React.PureComponent<{ title: string }> {
   }
 }
 
-class ListItem extends React.PureComponent<{ item: ItemObj | string }> {
+class ListItem extends React.PureComponent<{ item: { data: ItemType; key: string } }> {
   render() {
     const { item } = this.props;
     return (
       <View style={{ paddingRight: 30, borderWidth: 0 }}>
-        <Text>{JSON.stringify(item)}</Text>
+        <Text style={{ paddingHorizontal: 10 }}>
+          Key: {JSON.stringify(item.key)}, Item: {JSON.stringify(item.data)}
+        </Text>
       </View>
     );
   }
 }
 
-interface ItemObj {
-  title: string;
-  key?: string | number;
-}
-
-type ItemType = string | ItemObj;
-
-function getTitle(item: string | ItemObj): string {
+function getTitle(item: ItemType): string {
   return typeof item === 'string' ? item : item.title;
 }
 
@@ -79,31 +81,33 @@ export default ({ items }: { items: ItemType[] }) => {
 
   const sections = React.useMemo(() => {
     const itemSections: {
-      [key: string]: { item: ItemType; key: string }[];
+      [key: string]: { data: ItemType; key: string }[];
     } = {};
     for (const item of items) {
       const itemTitle = getTitle(item);
       const itemSection = getSection(itemTitle);
       const section = (itemSections[itemSection] = itemSections[itemSection] || []);
-      // TODO: fix this to count more then 1 key.
-      const keysCount = section.filter((i) => i.key === itemTitle).length || '';
-      section.push({
-        item,
-        key:
-          typeof item === 'string' || item.key === undefined
-            ? itemTitle + keysCount.toString()
-            : item.key.toString(),
-      });
+      let itemKey = typeof item === 'string' ? undefined : item.key;
+      if (itemKey === undefined) {
+        itemKey = itemTitle;
+        let keysCount = 0;
+        while (section.filter((i) => i.key === itemKey).length) {
+          itemKey = itemTitle + ++keysCount;
+        }
+      }
+      section.push({ data: item, key: itemKey.toString() });
     }
     return Object.entries(itemSections)
       .map(([sectionTitle, unsortedData]) => ({
         title: sectionTitle,
         key: sectionTitle,
-        data: unsortedData.sort((left, right) =>
-          compareStrings(getTitle(left.item), getTitle(right.item))
+        data: unsortedData.sort((leftItem, rightItem) =>
+          compareStrings(getTitle(leftItem.data), getTitle(rightItem.data))
         ),
       }))
-      .sort((left, right) => compareStrings(left.title, right.title));
+      .sort((leftSection, rightSection) =>
+        compareStrings(leftSection.title, rightSection.title)
+      );
   }, [items]);
 
   const sectionTitles = React.useMemo(() => sections.map(({ title }) => title), [sections]);
