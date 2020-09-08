@@ -1,8 +1,10 @@
 import React from 'react';
-import { View, SectionList, Text } from 'react-native';
+import { View, SectionList } from 'react-native';
 
 import type { ItemType, IndexedSectionListProps } from './types';
 import { scrollEfficiencyFunctions } from './defaultFunctions';
+import SectionHeader from './SectionHeader';
+import ListItem from './ListItem';
 import IndexList from './IndexList';
 
 // See https://javascript.info/regexp-unicode#unicode-properties-p
@@ -34,44 +36,16 @@ function compareStrings(leftString: string, rightString: string) {
   return 0;
 }
 
-class SectionHeader extends React.PureComponent<{ title: string }> {
-  render() {
-    const { title } = this.props;
-    return (
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Text
-          style={{
-            paddingHorizontal: 5,
-            fontSize: 18,
-            fontWeight: 'bold',
-            color: 'grey',
-          }}>
-          {title}
-        </Text>
-        <View style={{ flex: 1, borderWidth: 1, borderColor: 'gray' }} />
-      </View>
-    );
-  }
-}
-
-class ListItem extends React.PureComponent<{ item: { data: ItemType; key: string } }> {
-  render() {
-    const { item } = this.props;
-    return (
-      <View style={{ paddingRight: 30, borderWidth: 0 }}>
-        <Text style={{ paddingHorizontal: 10 }}>
-          Key: {JSON.stringify(item.key)}, Item: {JSON.stringify(item.data)}
-        </Text>
-      </View>
-    );
-  }
-}
-
 function getTitle(item: ItemType): string {
   return typeof item === 'string' ? item : item.title;
 }
 
-export default ({ items, scrollEfficiency }: IndexedSectionListProps) => {
+export default ({
+  items,
+  indexItemHeight = 25,
+  scrollEfficiency,
+  style,
+}: IndexedSectionListProps) => {
   const sectionListRef = React.useRef<SectionList>(null);
 
   const scrollEfficiencyFunction = React.useMemo(() => {
@@ -117,7 +91,7 @@ export default ({ items, scrollEfficiency }: IndexedSectionListProps) => {
   const sectionTitles = React.useMemo(() => sections.map(({ title }) => title), [sections]);
 
   return (
-    <View style={{ height: '100%', width: '100%' }}>
+    <View style={style}>
       <SectionList
         ref={sectionListRef}
         sections={sections}
@@ -128,7 +102,7 @@ export default ({ items, scrollEfficiency }: IndexedSectionListProps) => {
       />
       <IndexList
         indexes={sectionTitles}
-        indexItemHeight={25}
+        indexItemHeight={indexItemHeight}
         scrollEfficiency={scrollEfficiencyFunction}
         onSelectIndex={(selection) => {
           if (sectionListRef.current !== null) {

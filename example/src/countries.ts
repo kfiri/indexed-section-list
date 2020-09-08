@@ -244,5 +244,5 @@ export default [
   { name: 'Zambia', code: 'ZM' },
   { name: 'Zimbabwe', code: 'ZW' },
   { name: '9Gag', code: '9G' },
-  { name: '1337', code: '69' },
+  { name: '1337', code: '42' },
 ];

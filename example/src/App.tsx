@@ -8,7 +8,11 @@ const countryItems = countries.map((x) => ({ ...x, title: x.name }));
 export default function App() {
   return (
     <SafeAreaView>
-      <IndexedSectionList items={countryItems} />
+      <IndexedSectionList
+        items={countryItems}
+        indexItemHeight={20}
+        style={{ marginTop: 20 }}
+      />
     </SafeAreaView>
   );
 }
