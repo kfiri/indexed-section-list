@@ -1,34 +1,14 @@
 import * as React from 'react';
 import { SafeAreaView } from 'react-native';
 import IndexedSectionList from 'indexed-section-list';
+import countries from './countries';
+
+const countryItems = countries.map((x) => ({ ...x, title: x.name }));
 
 export default function App() {
   return (
     <SafeAreaView>
-      <IndexedSectionList
-        items={[
-          'a',
-          'b',
-          'c',
-          'd',
-          'e',
-          'f',
-          'g',
-          'h',
-          'i',
-          'j',
-          'k',
-          'l',
-          'm',
-          'n',
-          'o',
-          'p',
-          'q',
-          'r',
-          's',
-          't',
-        ]}
-      />
+      <IndexedSectionList items={countryItems} />
     </SafeAreaView>
   );
 }

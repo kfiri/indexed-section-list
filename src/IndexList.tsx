@@ -118,7 +118,6 @@ export default ({ indexes, onSelectIndex, indexItemHeight }: Props) => {
           if (containerRef.current !== null) {
             containerRef.current.measure((_ox, _oy, _width, height, _px, py) => {
               containerMeasure.current = { height: height, pageY: py };
-              console.log(height);
             });
           }
         }}>
