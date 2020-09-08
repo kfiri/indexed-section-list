@@ -14,8 +14,6 @@ npm install indexed-section-list
 import IndexedSectionList from "indexed-section-list";
 
 // ...
-
-const result = await IndexedSectionList.multiply(3, 7);
 ```
 
 ## Contributing
