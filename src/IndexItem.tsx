@@ -1,19 +1,9 @@
 import React, { PureComponent } from 'react';
-import { StyleSheet, Text, TouchableOpacity, ViewStyle } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 
-interface SelectIndexCallback {
-  (selection: { index: number; item: string; method: string }): void;
-}
+import type { IndexItemProps } from './types';
 
-interface ItemProps {
-  index: number;
-  item: string;
-  onSelectIndex: SelectIndexCallback;
-  indexItemHeight: number;
-  style?: ViewStyle;
-}
-
-class IndexItem extends PureComponent<ItemProps> {
+class IndexItem extends PureComponent<IndexItemProps> {
   render() {
     const { index, item, onSelectIndex, indexItemHeight, style } = this.props;
     return (

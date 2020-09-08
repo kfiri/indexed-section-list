@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, SectionList, Text } from 'react-native';
 
+import type { ItemType } from './types';
 import IndexList from './IndexList';
 
 // See https://javascript.info/regexp-unicode#unicode-properties-p
@@ -31,13 +32,6 @@ function compareStrings(leftString: string, rightString: string) {
   }
   return 0;
 }
-
-interface ItemObj {
-  title: string;
-  key?: string | number;
-}
-
-type ItemType = string | ItemObj;
 
 class SectionHeader extends React.PureComponent<{ title: string }> {
   render() {

@@ -8,14 +8,19 @@ import {
   GestureResponderEvent,
   ListRenderItemInfo,
 } from 'react-native';
+
+import type { IndexListProps } from './types';
 import IndexItem from './IndexItem';
 
 const SCROLL_PIXELS_PER_SECOND = 100;
 
 /**
- *
- * @param {*} listHeight
- * @param {*} containerHeight
+ * Set the scroll of the indexes list to the opposite of the user's scroll direction,
+ * so when the user scroll from one edge of the container to the other, the list
+ * would complete a full scroll within the container in the opposite direction.
+ * @param listHeight - the height of the index items list content.
+ * @param containerHeight - the height of the index container.
+ * @returns the multiplier of the scroll event value to change way the the scroll behaves.
  */
 function scrollEfficiency(containerHeight: number, listHeight: number) {
   return (containerHeight - listHeight) / (containerHeight - 50);
@@ -24,36 +29,28 @@ function scrollEfficiency(containerHeight: number, listHeight: number) {
 //   return 1;
 // }
 
-interface SelectIndexCallback {
-  (selection: { index: number; item: string; method: string }): void;
-}
-
-interface Props {
-  indexes: string[];
-  onSelectIndex: SelectIndexCallback;
-  indexItemHeight: number;
-}
-
-export default ({ indexes, onSelectIndex, indexItemHeight }: Props) => {
+export default ({ indexes, onSelectIndex, indexItemHeight }: IndexListProps) => {
   const containerRef = React.useRef<View>(null);
   const flatListRef = React.useRef<FlatList>(null);
-
   const containerMeasure = React.useRef<{ height: number; pageY: number }>({
     height: 0,
     pageY: 0,
   });
+
+  // The scroll position of the flat-list.
   const flatListScroll = React.useRef(0);
   // The previous/initial position of a drag relative to the container.
   const cursorPrevPosition = React.useRef<number | null>(null);
   // The active position of a drag relative to the container.
   const cursorPosition = React.useRef<number | null>(null);
+  // The index (position) the cursor is currently hovered over.
   const activeIndex = React.useRef<number | null>(null);
 
   const scrollPosition = React.useMemo(() => new Animated.Value(0), []);
 
   /**
    * Scroll the flat-list and call onSelectIndex for a new scroll position.
-   * @param {{ value }} value - the value of the scroll position.
+   * @param {{ value: number }} value - the value of the scroll position.
    */
   const scrollListener: Animated.ValueListenerCallback = React.useMemo(
     () => ({ value }) => {
