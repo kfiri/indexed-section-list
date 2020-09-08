@@ -1,4 +1,5 @@
 import type { ViewStyle } from 'react-native';
+import type { scrollEfficiencyFunctions } from './defaultFunctions';
 
 interface ItemObj {
   title: string;
@@ -10,16 +11,24 @@ export interface SelectIndexCallback {
   (selection: { index: number; item: string; method: string }): void;
 }
 
-export interface IndexItemProps {
-  index: number;
-  item: string;
-  onSelectIndex: SelectIndexCallback;
-  indexItemHeight: number;
-  style?: ViewStyle;
+export type ScrollEfficiencyFunction = (containerHeight: number, listHeight: number) => number;
+
+export interface IndexedSectionListProps {
+  items: ItemType[];
+  scrollEfficiency?: keyof typeof scrollEfficiencyFunctions | ScrollEfficiencyFunction | null;
 }
 
 export interface IndexListProps {
   indexes: string[];
   onSelectIndex: SelectIndexCallback;
   indexItemHeight: number;
+  scrollEfficiency: ScrollEfficiencyFunction;
+}
+
+export interface IndexItemProps {
+  index: number;
+  item: string;
+  onSelectIndex: SelectIndexCallback;
+  indexItemHeight: number;
+  style?: ViewStyle;
 }

@@ -14,22 +14,12 @@ import IndexItem from './IndexItem';
 
 const SCROLL_PIXELS_PER_SECOND = 100;
 
-/**
- * Set the scroll of the indexes list to the opposite of the user's scroll direction,
- * so when the user scroll from one edge of the container to the other, the list
- * would complete a full scroll within the container in the opposite direction.
- * @param listHeight - the height of the index items list content.
- * @param containerHeight - the height of the index container.
- * @returns the multiplier of the scroll event value to change way the the scroll behaves.
- */
-function scrollEfficiency(containerHeight: number, listHeight: number) {
-  return (containerHeight - listHeight) / (containerHeight - 50);
-}
-// function scrollEfficiency(listHeight, containerHeight) {
-//   return 1;
-// }
-
-export default ({ indexes, onSelectIndex, indexItemHeight }: IndexListProps) => {
+export default ({
+  indexes,
+  onSelectIndex,
+  indexItemHeight,
+  scrollEfficiency,
+}: IndexListProps) => {
   const containerRef = React.useRef<View>(null);
   const flatListRef = React.useRef<FlatList>(null);
   const containerMeasure = React.useRef<{ height: number; pageY: number }>({

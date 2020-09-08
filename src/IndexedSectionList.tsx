@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, SectionList, Text } from 'react-native';
 
-import type { ItemType } from './types';
+import type { ItemType, IndexedSectionListProps } from './types';
+import { scrollEfficiencyFunctions } from './defaultFunctions';
 import IndexList from './IndexList';
 
 // See https://javascript.info/regexp-unicode#unicode-properties-p
@@ -70,8 +71,17 @@ function getTitle(item: ItemType): string {
   return typeof item === 'string' ? item : item.title;
 }
 
-export default ({ items }: { items: ItemType[] }) => {
+export default ({ items, scrollEfficiency }: IndexedSectionListProps) => {
   const sectionListRef = React.useRef<SectionList>(null);
+
+  const scrollEfficiencyFunction = React.useMemo(() => {
+    if (!scrollEfficiency) {
+      return scrollEfficiencyFunctions.reversed;
+    } else if (typeof scrollEfficiency === 'string') {
+      return scrollEfficiencyFunctions[scrollEfficiency];
+    }
+    return scrollEfficiency;
+  }, [scrollEfficiency]);
 
   const sections = React.useMemo(() => {
     const itemSections: {
@@ -119,6 +129,7 @@ export default ({ items }: { items: ItemType[] }) => {
       <IndexList
         indexes={sectionTitles}
         indexItemHeight={25}
+        scrollEfficiency={scrollEfficiencyFunction}
         onSelectIndex={(selection) => {
           if (sectionListRef.current !== null) {
             sectionListRef.current.scrollToLocation({
