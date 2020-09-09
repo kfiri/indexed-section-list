@@ -1,6 +1,7 @@
 # indexed-section-list
 
 A simple modular section list with an index.
+![CountriesList](https://user-images.githubusercontent.com/31252902/92656155-3483fe00-f2fb-11ea-9be0-6d2bd519fbb9.gif)
 
 ## Installation
 
