@@ -2,6 +2,8 @@
 
 A simple modular section list with an index.
 
+![CountriesList](https://user-images.githubusercontent.com/31252902/92656462-c429ac80-f2fb-11ea-8db6-f0615380992e.gif)
+
 ## Installation
 
 ```sh
