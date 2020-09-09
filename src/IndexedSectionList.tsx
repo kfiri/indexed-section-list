@@ -47,8 +47,8 @@ export default ({
   wrapperStyle,
   indexWrapperStyle,
   getSectionProps,
-  renderSectionHeader,
-  renderItem,
+  renderSectionHeader = ({ section: { title } }) => <SectionHeader title={title} />,
+  renderItem = ({ item }) => <ListItem item={item} />,
   ...sectionListProps
 }: IndexedSectionListProps) => {
   const sectionListRef = React.useRef<SectionList>(null);
@@ -104,10 +104,8 @@ export default ({
         sections={sections}
         keyExtractor={(item) => item.key}
         onScrollToIndexFailed={(_info) => console.warn('failed to scroll!')}
-        renderSectionHeader={
-          renderSectionHeader || (({ section: { title } }) => <SectionHeader title={title} />)
-        }
-        renderItem={renderItem || (({ item }) => <ListItem item={item} />)}
+        renderSectionHeader={renderSectionHeader}
+        renderItem={renderItem}
       />
       <IndexList
         wrapperStyle={indexWrapperStyle}

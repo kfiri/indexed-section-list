@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { SafeAreaView, StyleSheet } from 'react-native';
+import { SafeAreaView, StyleSheet, Text } from 'react-native';
 import IndexedSectionList from 'indexed-section-list';
 import countries from './countries';
 
@@ -7,7 +7,8 @@ const countryItems = countries.map((x) => ({ ...x, title: x.name }));
 
 export default function App() {
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.areaView}>
+      <Text style={styles.header}>Countries list!</Text>
       <IndexedSectionList
         items={countryItems}
         indexItemHeight={20}
@@ -21,7 +22,16 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-  wrapper: { marginTop: 20 },
+  areaView: {
+    flex: 1,
+    marginTop: 30,
+  },
+  header: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  wrapper: { flex: 1, marginTop: 10 },
   sectionList: { width: '100%' },
   indexWrapper: {
     top: 0,
