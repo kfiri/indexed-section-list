@@ -82,8 +82,8 @@ export default ({
    * Start an animation for the scroll position to a new position.
    * @param {number} position - the new scroll position.
    */
-  const animateScroll = React.useMemo(
-    () => (position: number) => {
+  const animateScroll = React.useCallback(
+    (position: number) => {
       const scrollDuration =
         (Math.abs(position - flatListScroll.current) * 1000) / SCROLL_PIXELS_PER_SECOND;
       Animated.timing(scrollPosition, {
@@ -199,6 +199,6 @@ const styles = StyleSheet.create({
   },
   indexContentContainer: {
     flexGrow: 1,
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
   },
 });
