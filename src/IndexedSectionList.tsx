@@ -1,7 +1,12 @@
 import React from 'react';
 import { View, SectionList, StyleSheet, SectionListData } from 'react-native';
 
-import type { ItemType, IndexedSectionListProps, SectionItem } from './types';
+import type {
+  ItemType,
+  IndexedSectionListProps,
+  SectionItem,
+  IndexedSectionListData,
+} from './types';
 import { scrollEfficiencyFunctions } from './defaultFunctions';
 import SectionHeader from './SectionHeader';
 import ListItem from './ListItem';
@@ -40,90 +45,99 @@ function getTitle(item: ItemType): string {
   return typeof item === 'string' ? item : item.title;
 }
 
-export default ({
-  items,
-  indexItemHeight = 25,
-  scrollEfficiency,
-  wrapperStyle,
-  indexWrapperStyle,
-  getSectionProps,
-  renderSectionHeader = ({ section: { title } }) => <SectionHeader title={title} />,
-  renderItem = ({ item }) => <ListItem item={item} />,
-  ...sectionListProps
-}: IndexedSectionListProps) => {
-  const sectionListRef = React.useRef<SectionList>(null);
+export default React.forwardRef(
+  (
+    {
+      items,
+      indexItemHeight = 25,
+      scrollEfficiency,
+      wrapperStyle,
+      indexWrapperStyle,
+      getSectionProps,
+      renderSectionHeader = ({ section: { title } }) => <SectionHeader title={title} />,
+      renderItem = ({ item }) => <ListItem item={item} />,
+      onSelectIndex = undefined,
+      scrollOnSelect = true,
+      ...sectionListProps
+    }: IndexedSectionListProps,
+    ref
+  ) => {
+    const sectionListRef = React.useRef<SectionList>(null);
+    React.useImperativeHandle(ref, () => sectionListRef.current);
 
-  const scrollEfficiencyFunction = React.useMemo(() => {
-    if (!scrollEfficiency) {
-      return scrollEfficiencyFunctions.reversed;
-    } else if (typeof scrollEfficiency === 'string') {
-      return scrollEfficiencyFunctions[scrollEfficiency];
-    }
-    return scrollEfficiency;
-  }, [scrollEfficiency]);
-
-  const sections = React.useMemo<SectionListData<SectionItem>[]>(() => {
-    const itemSections: {
-      [key: string]: { data: ItemType; key: string }[];
-    } = {};
-    for (const item of items) {
-      const itemTitle = getTitle(item);
-      const itemSection = getSection(itemTitle);
-      const section = (itemSections[itemSection] = itemSections[itemSection] || []);
-      let itemKey = typeof item === 'string' ? undefined : item.key;
-      if (itemKey === undefined) {
-        itemKey = itemTitle;
-        let keysCount = 0;
-        while (section.filter((i) => i.key === itemKey).length) {
-          itemKey = itemTitle + ++keysCount;
-        }
+    const scrollEfficiencyFunction = React.useMemo(() => {
+      if (!scrollEfficiency) {
+        return scrollEfficiencyFunctions.reversed;
+      } else if (typeof scrollEfficiency === 'string') {
+        return scrollEfficiencyFunctions[scrollEfficiency];
       }
-      section.push({ data: item, key: itemKey.toString() });
-    }
-    return Object.entries(itemSections)
-      .map<SectionListData<SectionItem>>(([sectionTitle, unsortedData]) => ({
-        title: sectionTitle,
-        key: sectionTitle,
-        data: unsortedData.sort((leftItem, rightItem) =>
-          compareStrings(getTitle(leftItem.data), getTitle(rightItem.data))
-        ),
-        ...(getSectionProps ? getSectionProps(sectionTitle, unsortedData) : {}),
-      }))
-      .sort((leftSection, rightSection) =>
-        compareStrings(leftSection.title, rightSection.title)
-      );
-  }, [getSectionProps, items]);
+      return scrollEfficiency;
+    }, [scrollEfficiency]);
 
-  const sectionTitles = React.useMemo(() => sections.map(({ title }) => title), [sections]);
-
-  return (
-    <View style={[styles.wrapper, wrapperStyle]}>
-      <SectionList
-        {...sectionListProps}
-        ref={sectionListRef}
-        sections={sections}
-        keyExtractor={(item) => item.key}
-        onScrollToIndexFailed={(_info) => console.warn('failed to scroll!')}
-        renderSectionHeader={renderSectionHeader}
-        renderItem={renderItem}
-      />
-      <IndexList
-        wrapperStyle={indexWrapperStyle}
-        indexes={sectionTitles}
-        indexItemHeight={indexItemHeight}
-        scrollEfficiency={scrollEfficiencyFunction}
-        onSelectIndex={(selection) => {
-          if (sectionListRef.current !== null) {
-            sectionListRef.current.scrollToLocation({
-              sectionIndex: selection.index,
-              itemIndex: 0,
-            });
+    const sections = React.useMemo<SectionListData<SectionItem>[]>(() => {
+      const itemSections: {
+        [key: string]: SectionItem[];
+      } = {};
+      for (const item of items) {
+        const itemTitle = getTitle(item);
+        const itemSection = getSection(itemTitle);
+        const section = (itemSections[itemSection] = itemSections[itemSection] || []);
+        let itemKey = typeof item === 'string' ? undefined : item.key;
+        if (itemKey === undefined) {
+          itemKey = itemTitle;
+          let keysCount = 0;
+          while (section.filter((i) => i.key === itemKey).length) {
+            itemKey = itemTitle + ++keysCount;
           }
-        }}
-      />
-    </View>
-  );
-};
+        }
+        section.push({ data: item, key: itemKey.toString() });
+      }
+      return Object.entries(itemSections)
+        .map<IndexedSectionListData>(([sectionTitle, unsortedData]) => ({
+          title: sectionTitle,
+          key: sectionTitle,
+          data: unsortedData.sort((leftItem, rightItem) =>
+            compareStrings(getTitle(leftItem.data), getTitle(rightItem.data))
+          ),
+          ...(getSectionProps ? getSectionProps(sectionTitle, unsortedData) : {}),
+        }))
+        .sort((leftSection, rightSection) =>
+          compareStrings(leftSection.title, rightSection.title)
+        );
+    }, [getSectionProps, items]);
+
+    const sectionTitles = React.useMemo(() => sections.map(({ title }) => title), [sections]);
+
+    return (
+      <View style={[styles.wrapper, wrapperStyle]}>
+        <SectionList
+          onScrollToIndexFailed={(_info) => console.warn('failed to scroll!')}
+          {...sectionListProps}
+          ref={sectionListRef}
+          sections={sections}
+          keyExtractor={(item) => item.key}
+          renderSectionHeader={renderSectionHeader}
+          renderItem={renderItem}
+        />
+        <IndexList
+          wrapperStyle={indexWrapperStyle}
+          indexes={sectionTitles}
+          indexItemHeight={indexItemHeight}
+          scrollEfficiency={scrollEfficiencyFunction}
+          onSelectIndex={(selection) => {
+            scrollOnSelect &&
+              sectionListRef.current &&
+              sectionListRef.current.scrollToLocation({
+                sectionIndex: selection.index,
+                itemIndex: 0,
+              });
+            onSelectIndex && onSelectIndex(selection);
+          }}
+        />
+      </View>
+    );
+  }
+);
 
 const styles = StyleSheet.create({
   wrapper: { alignItems: 'flex-end', justifyContent: 'center' },

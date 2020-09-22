@@ -7,7 +7,7 @@ A simple modular section list with an index.
 ## Installation
 
 ```sh
-npm install indexed-section-list
+npm install --save indexed-section-list
 ```
 
 ## Usage
@@ -33,16 +33,22 @@ function App() {
 
 # Props
 
-Inherits [Sectionlist props](https://reactnative.dev/docs/sectionlist#props).
+Inherits [SectionList props](https://reactnative.dev/docs/sectionlist#props).
 
-| Name              | Description                                                                                                                          | Type                                                     | Required |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------- | -------- |
-| items             | The items of the list, either strings or objects with titles.                                                                        | (string \| { title: string; key?: string \| number; })[] | yes      |
-| indexItemHeight   | The height if an item in the index list (must be a constant). defaults to 25px.                                                      | number                                                   | no       |
-| indexWrapperStyle | The style of the view that contains the index list.                                                                                  | ViewStyle                                                | no       |
-| scrollEfficiency  | The method of the scroll (see Scroll Efficiency Functions). default is "revered".                                                    | "reversed" \| "initial" \| Function                      | no       |
-| wrapperStyle      | The style of the view that contains both the section list and the index.                                                             | ViewStyle                                                | no       |
-| getSectionProps   | A methods that returns a section's properties (see [Section Properties](https://reactnative.dev/docs/sectionlist#type-definitions)). | Function                                                 | no       |
+| Name              | Description                                                                                                                                                                                               | Type                                                     | Required |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- | -------- |
+| items             | The items of the list, either strings or objects with titles.                                                                                                                                             | (string \| { title: string; key?: string \| number; })[] | yes      |
+| indexItemHeight   | The height if an item in the index list (must be a constant). defaults to 25px.                                                                                                                           | number                                                   | no       |
+| indexWrapperStyle | The style of the view that contains the index list.                                                                                                                                                       | ViewStyle                                                | no       |
+| onSelectIndex     | A callback that is fired when the user selects an index.                                                                                                                                                  | Function                                                 | no       |
+| scrollEfficiency  | The method of the scroll (see Scroll Efficiency Functions). default is "revered".                                                                                                                         | "reversed" \| "initial" \| Function                      | no       |
+| scrollOnSelect    | Should the section list scroll to an index when onSelectIndex is fired? (default true). Set to false if you want to manually scroll the section list within onSelectIndex.                                | boolean                                                  | no       |
+| wrapperStyle      | The style of the view that contains both the section list and the index.                                                                                                                                  | ViewStyle                                                | no       |
+| getSectionProps   | A methods that returns a section's properties (see [Section Properties](https://reactnative.dev/docs/sectionlist#type-definitions)). Any change in this prop would cause the whole component to rerender. | Function                                                 | no       |
+
+### Ref
+
+The `ref` prop behave exactly the same as the prop `ref` in [SectionList props](https://reactnative.dev/docs/sectionlist#props).
 
 ### Scroll Efficiency Functions
 
