@@ -1,9 +1,12 @@
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 
-import type { ListItemProps } from './types';
+import type { LiteralString, ListItemProps } from './types';
 
-class ListItem extends React.PureComponent<ListItemProps> {
+class ListItem<
+  TitleKey extends LiteralString<TitleKey>,
+  UniqueKey extends LiteralString<UniqueKey>
+> extends React.PureComponent<ListItemProps<TitleKey, UniqueKey>> {
   render() {
     const { item } = this.props;
     return (

@@ -3,14 +3,13 @@ import { SafeAreaView, StyleSheet, Text } from 'react-native';
 import IndexedSectionList from 'indexed-section-list';
 import countries from './countries';
 
-const countryItems = countries.map((x) => ({ ...x, title: x.name }));
-
 export default function App() {
   return (
     <SafeAreaView style={styles.areaView}>
       <Text style={styles.header}>Countries list!</Text>
       <IndexedSectionList
-        items={countryItems}
+        items={countries}
+        titleKey="name"
         indexItemHeight={20}
         style={styles.sectionList}
         wrapperStyle={styles.wrapper}

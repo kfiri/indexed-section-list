@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { Ref, ReactInstance } from 'react';
 import { View, SectionList, StyleSheet, SectionListData } from 'react-native';
 
 import type {
-  ItemType,
+  LiteralString,
   IndexedSectionListProps,
   SectionItem,
   IndexedSectionListData,
@@ -41,12 +41,8 @@ function compareStrings(leftString: string, rightString: string) {
   return 0;
 }
 
-function getTitle(item: ItemType): string {
-  return typeof item === 'string' ? item : item.title;
-}
-
 export default React.forwardRef(
-  (
+  <TitleKey extends LiteralString<TitleKey>, UniqueKey extends LiteralString<UniqueKey>>(
     {
       items,
       indexItemHeight = 25,
@@ -54,13 +50,15 @@ export default React.forwardRef(
       wrapperStyle,
       indexWrapperStyle,
       getSectionProps,
+      uniqueKey = 'key' as UniqueKey,
+      titleKey = 'title' as TitleKey,
       renderSectionHeader = ({ section: { title } }) => <SectionHeader title={title} />,
       renderItem = ({ item }) => <ListItem item={item} />,
       onSelectIndex = undefined,
       scrollOnSelect = true,
       ...sectionListProps
-    }: IndexedSectionListProps,
-    ref
+    }: IndexedSectionListProps<TitleKey, UniqueKey>,
+    ref: Ref<ReactInstance | null>
   ) => {
     const sectionListRef = React.useRef<SectionList>(null);
     React.useImperativeHandle(ref, () => sectionListRef.current);
@@ -74,15 +72,23 @@ export default React.forwardRef(
       return scrollEfficiency;
     }, [scrollEfficiency]);
 
-    const sections = React.useMemo<SectionListData<SectionItem>[]>(() => {
-      const itemSections: {
-        [key: string]: SectionItem[];
-      } = {};
+    const sections = React.useMemo<SectionListData<SectionItem<TitleKey, UniqueKey>>[]>(() => {
+      const itemSections: { [sectionKey: string]: SectionItem<TitleKey, UniqueKey>[] } = {};
       for (const item of items) {
-        const itemTitle = getTitle(item);
+        // Get the title of the item from the `titleKey` property if it's not a string.
+        const itemTitle: string = typeof item === 'string' ? item : item[titleKey];
+        if (itemTitle === undefined) {
+          throw Error(`${JSON.stringify(item)} has no property ${titleKey}`);
+        }
+
+        // Get the section of the item and set default array to the sections in that key.
         const itemSection = getSection(itemTitle);
         const section = (itemSections[itemSection] = itemSections[itemSection] || []);
-        let itemKey = typeof item === 'string' ? undefined : item.key;
+
+        // Get the key from the item. If there is no key in the item,
+        // generate a unique key for that item in the section array.
+        let itemKey: string | number | undefined =
+          typeof item === 'string' ? undefined : item[uniqueKey];
         if (itemKey === undefined) {
           itemKey = itemTitle;
           let keysCount = 0;
@@ -90,21 +96,21 @@ export default React.forwardRef(
             itemKey = itemTitle + ++keysCount;
           }
         }
-        section.push({ data: item, key: itemKey.toString() });
+        section.push({ data: item, title: itemTitle, key: itemKey.toString() });
       }
       return Object.entries(itemSections)
-        .map<IndexedSectionListData>(([sectionTitle, unsortedData]) => ({
-          title: sectionTitle,
-          key: sectionTitle,
+        .map<IndexedSectionListData<TitleKey, UniqueKey>>(([sectionKey, unsortedData]) => ({
+          title: sectionKey,
+          key: sectionKey,
           data: unsortedData.sort((leftItem, rightItem) =>
-            compareStrings(getTitle(leftItem.data), getTitle(rightItem.data))
+            compareStrings(leftItem.title, rightItem.title)
           ),
-          ...(getSectionProps ? getSectionProps(sectionTitle, unsortedData) : {}),
+          ...(getSectionProps ? getSectionProps(sectionKey, unsortedData) : {}),
         }))
         .sort((leftSection, rightSection) =>
           compareStrings(leftSection.title, rightSection.title)
         );
-    }, [getSectionProps, items]);
+    }, [getSectionProps, items, titleKey, uniqueKey]);
 
     const sectionTitles = React.useMemo(() => sections.map(({ title }) => title), [sections]);
 
