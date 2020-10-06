@@ -1,6 +1,6 @@
 {
   "name": "indexed-section-list",
-  "version": "0.2.2",
+  "version": "1.0.0",
   "description": "A simple modular section list with index",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
