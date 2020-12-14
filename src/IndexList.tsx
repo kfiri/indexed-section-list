@@ -15,6 +15,7 @@ import IndexItem from './IndexItem';
 const SCROLL_PIXELS_PER_SECOND = 100;
 
 export default ({
+  indexTextStyle,
   indexes,
   onSelectIndex,
   indexItemHeight,
@@ -181,6 +182,7 @@ export default ({
               item={item}
               onSelectIndex={onSelectIndex}
               indexItemHeight={indexItemHeight}
+              indexTextStyle={indexTextStyle}
             />
           )}
         />

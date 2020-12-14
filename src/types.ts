@@ -1,4 +1,4 @@
-import type { ViewStyle, SectionListProps, SectionListData } from 'react-native';
+import type { ViewStyle, TextStyle, SectionListProps, SectionListData } from 'react-native';
 import type { scrollEfficiencyFunctions } from './defaultFunctions';
 
 // ================= Utils ==================
@@ -73,6 +73,8 @@ export interface IndexedSectionListProps<
   indexItemHeight?: number;
   /** The style of the view that contains the index list. */
   indexWrapperStyle?: ViewStyle;
+  /** The style of the view that contains the index text. */
+  indexTextStyle?: TextStyle;
   /** The items of the list, either strings or objects with a title property. */
   items: ItemType<TitleKey, UniqueKey>[];
   /** A callback that is fired when the user selects an index. */
@@ -107,6 +109,7 @@ export interface IndexListProps {
   indexItemHeight: number;
   scrollEfficiency: ScrollEfficiencyFunction;
   wrapperStyle?: ViewStyle;
+  indexTextStyle?: TextStyle;
 }
 export interface IndexItemProps {
   index: number;
@@ -114,4 +117,5 @@ export interface IndexItemProps {
   onSelectIndex: SelectIndexCallback;
   indexItemHeight: number;
   style?: ViewStyle;
+  indexTextStyle?: TextStyle;
 }
