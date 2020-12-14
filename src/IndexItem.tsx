@@ -5,12 +5,12 @@ import type { IndexItemProps } from './types';
 
 class IndexItem extends PureComponent<IndexItemProps> {
   render() {
-    const { index, item, onSelectIndex, indexItemHeight, style } = this.props;
+    const { index, item, onSelectIndex, indexItemHeight, style, indexTextStyle } = this.props;
     return (
       <TouchableOpacity
         onPressIn={() => onSelectIndex({ index, item, method: 'press' })}
         style={[styles.indexItem, style, { height: indexItemHeight }]}>
-        <Text style={styles.indexText}>{item}</Text>
+        <Text style={[styles.indexText, indexTextStyle]}>{item}</Text>
       </TouchableOpacity>
     );
   }

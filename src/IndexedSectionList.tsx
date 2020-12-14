@@ -49,6 +49,7 @@ export default React.forwardRef(
       scrollEfficiency,
       wrapperStyle,
       indexWrapperStyle,
+      indexTextStyle,
       getSectionProps,
       uniqueKey = 'key' as UniqueKey,
       titleKey = 'title' as TitleKey,
@@ -127,6 +128,7 @@ export default React.forwardRef(
         />
         <IndexList
           wrapperStyle={indexWrapperStyle}
+          indexTextStyle={indexTextStyle}
           indexes={sectionTitles}
           indexItemHeight={indexItemHeight}
           scrollEfficiency={scrollEfficiencyFunction}
