@@ -9,7 +9,6 @@ import type {
 } from './types';
 import { scrollEfficiencyFunctions } from './defaultFunctions';
 import SectionHeader from './SectionHeader';
-import ListItem from './ListItem';
 import IndexList from './IndexList';
 
 // See https://javascript.info/regexp-unicode#unicode-properties-p
@@ -54,7 +53,7 @@ export default React.forwardRef(
       uniqueKey = 'key' as UniqueKey,
       titleKey = 'title' as TitleKey,
       renderSectionHeader = ({ section: { title } }) => <SectionHeader title={title} />,
-      renderItem = ({ item }) => <ListItem item={item} />,
+      renderItem,
       onSelectIndex = undefined,
       scrollOnSelect = true,
       ...sectionListProps

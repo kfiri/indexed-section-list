@@ -95,12 +95,6 @@ export interface IndexedSectionListProps<
 export interface SectionHeaderProps {
   title: string;
 }
-export interface ListItemProps<
-  TitleKey extends LiteralString<TitleKey>,
-  UniqueKey extends LiteralString<UniqueKey>
-> {
-  item: { data: ItemType<TitleKey, UniqueKey>; key: string };
-}
 
 // ============ Index components ============
 export interface IndexListProps {

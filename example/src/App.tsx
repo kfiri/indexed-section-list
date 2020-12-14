@@ -2,6 +2,7 @@ import * as React from 'react';
 import { SafeAreaView, StyleSheet, Text } from 'react-native';
 import IndexedSectionList from 'indexed-section-list';
 import countries from './countries';
+import ListItem from './ListItem';
 
 export default function App() {
   return (
@@ -14,7 +15,9 @@ export default function App() {
         style={styles.sectionList}
         wrapperStyle={styles.wrapper}
         indexWrapperStyle={styles.indexWrapper}
+        indexTextStyle={styles.indexText}
         showsVerticalScrollIndicator={false}
+        renderItem={({ item }) => <ListItem item={item} />}
       />
     </SafeAreaView>
   );
@@ -41,5 +44,9 @@ const styles = StyleSheet.create({
     marginVertical: 30,
     borderWidth: 1,
     borderRadius: 8,
+    backgroundColor: 'black',
+  },
+  indexText: {
+    color: 'green',
   },
 });
